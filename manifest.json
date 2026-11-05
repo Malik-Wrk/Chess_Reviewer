@@ -1,0 +1,4 @@
+{"manifest_version":3,"name":"Stockfish Game Review for Chess.com","version":"1.0","description":"Chess.com-style game review powered by Stockfish 19, running locally.",
+"permissions":["scripting","activeTab"],"host_permissions":["https://www.chess.com/*","https://api.chess.com/*","https://api.anthropic.com/*","https://lichess.org/*"],
+"background":{"service_worker":"background.js"},"action":{"default_title":"Review this game"},
+"content_security_policy":{"extension_pages":"script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"}}

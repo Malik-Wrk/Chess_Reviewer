@@ -1,0 +1,113 @@
+<!doctype html><meta charset=utf-8><title>Game Review</title>
+<style>
+:root{--s:max(320px,min(calc(100vh - 150px),calc(100vw - 470px)))}
+*{box-sizing:border-box}
+body{margin:0;color:#fff;font:600 15px/1.35 system-ui,-apple-system,"Segoe UI",sans-serif;background:#352a24 repeating-linear-gradient(90deg,rgba(0,0,0,.06) 0 4px,transparent 4px 11px)}
+button,select{font:inherit;color:#fff;background:#4a433d;border:0;border-radius:6px;padding:7px 12px;cursor:pointer}button:hover{filter:brightness(1.15)}
+input[type=text],input:not([type]),input[type=password],textarea{background:#262421;color:#fff;border:1px solid #4a433d;border-radius:6px;padding:7px;font:inherit}
+main{display:flex;gap:18px;padding:8px 14px;align-items:flex-start;justify-content:center}
+#left{position:relative}#gear{position:absolute;right:-4px;top:12px;background:none;padding:4px;font-size:22px;color:#8b8987}
+.pl{display:flex;align-items:center;gap:10px;height:56px;margin-left:36px;width:var(--s)}
+.av{width:42px;height:42px;border-radius:4px;background:#d6d3cf;color:#9b9894;display:flex;align-items:center;justify-content:center;font-size:30px}.av.k{background:#4a4642;color:#2a2724}
+.nm{font-size:17px;font-weight:700}.rt{color:#c3c0bd;font-weight:600}.cap{color:#c3c0bd;display:flex;align-items:center;gap:2px;font-size:17px;letter-spacing:-3px}.cap i{font-style:normal;letter-spacing:0;font-size:13px;margin-left:6px}
+.cw{color:#ece9e4;text-shadow:0 0 2px #000}.cb{color:#262421}
+.ck{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:30px;font-weight:600;padding:2px 14px;border-radius:5px;min-width:130px;justify-content:flex-end}
+.ck.w{background:#fff;color:#262421}.ck.b{background:#262421;color:#fff}.ck.off{background:#8b8987;color:#e8e6e3}.ck.b.off{background:#2f2c29;color:#8b8987}.ck:empty{display:none}
+#wrap{display:flex;gap:8px;position:relative}
+#bar{width:28px;height:var(--s);background:#403d39;position:relative;border-radius:3px;overflow:hidden}#barw{position:absolute;left:0;right:0;background:#fff;transition:height .15s}
+#ev{position:absolute;left:0;right:0;text-align:center;font-size:12px;font-weight:700}#wrap.pz #bar{visibility:hidden}
+#board{position:relative;width:var(--s);height:var(--s);display:grid;grid-template:repeat(8,1fr)/repeat(8,1fr);background-size:100% 100%;background-repeat:no-repeat;border-radius:4px;touch-action:none;user-select:none}
+.sq{position:relative;display:flex;align-items:center;justify-content:center;font-size:calc(var(--s)/9)}
+#board .l,#board .d{background:transparent}#board.flat .l{background:#ecd9b7}#board.flat .d{background:#8f5b3c}
+.hl{box-shadow:inset 0 0 0 100px var(--hl)}
+.sq i{font-style:normal;line-height:1;width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;cursor:grab;will-change:transform}
+.sq i[class^=pc-]{background-size:94%;background-position:center;background-repeat:no-repeat}.w{color:#fff;text-shadow:0 0 2px #000}.b{color:#222}
+.sq em{position:absolute;font-style:normal;font-weight:800;font-size:calc(var(--s)/34);z-index:0}.l em{color:#9c6c49}.d em{color:#ecd5b0}
+.sq .bd.lg{position:absolute;top:-9%;right:-9%;z-index:3;width:calc(var(--s)/22);height:calc(var(--s)/22);font-size:calc(var(--s)/42);box-shadow:0 1px 4px #0006}
+.sq b.cw{position:absolute;top:1px;left:1px;z-index:3;font-size:14px;color:#fff;padding:1px 5px;border-radius:9px}
+#arrow{position:absolute;inset:0;pointer-events:none;z-index:2}
+.sq.rd::before{content:'';position:absolute;inset:0;background:rgba(235,97,80,.85);z-index:0}.sq.sel{box-shadow:inset 0 0 0 100px #f6f66980}
+.sq.tg::after{content:'';position:absolute;left:35%;top:35%;width:30%;height:30%;border-radius:50%;background:rgba(0,0,0,.22);z-index:2}
+#board.var::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.16);pointer-events:none;z-index:1;border-radius:4px}
+#over{position:absolute;left:36px;right:0;top:0;bottom:0;display:none;align-items:center;justify-content:center;pointer-events:none;z-index:9;overflow:hidden}#over.on{display:flex}
+#over .card{background:#262421ee;border-radius:12px;padding:18px 38px;text-align:center;box-shadow:0 8px 40px #000a;animation:pop .5s cubic-bezier(.2,1.6,.4,1) both}#over .card b{display:block;font-size:30px}
+#over .win,#over .end{border:3px solid #81b64c}#over .draw{border:3px solid #888}#over .lose{border:3px solid #fa412d;animation:pop .5s both,shake .45s .5s}
+.conf{position:absolute;top:-14px;width:8px;height:13px;animation:fall 2s linear forwards}.kfall{animation:kfall .7s ease-in forwards}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}@keyframes shake{25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+@keyframes fall{to{transform:translateY(calc(var(--s) + 30px)) rotate(720deg)}}@keyframes kfall{to{transform:rotate(90deg) translateY(12%)}}
+.bd{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;font-weight:800;width:22px;height:22px;font-size:12px;flex:none}
+/* right panel */
+#panel{width:350px;background:#2b2724e6;border-radius:8px;padding:6px 14px 12px;max-height:calc(var(--s) + 112px);overflow-y:auto}
+.ph{display:flex;align-items:center;gap:14px;height:52px}.ph button{background:none;padding:2px;display:flex}.ph svg{fill:#c3c0bd}.ph b{font-size:20px;flex:1;display:flex;align-items:center;gap:8px}
+#st{font-size:12px;color:#8b8987;min-height:16px}.view{display:none}.view.on{display:block}.f{color:#9b9996}
+#coach{display:flex;align-items:flex-end;margin:6px 0 10px}#coach svg{flex:none;margin-right:10px}
+#bubble{position:relative;flex:1;background:#fff;color:#262421;border-radius:12px;padding:12px 14px;min-height:100px;max-height:240px;overflow:auto}
+#bubble::before{content:'';position:absolute;left:-9px;bottom:24px;border:10px solid transparent;border-right-color:#fff;border-left:0}
+#info{display:flex;align-items:center;gap:8px;font-size:19px;font-weight:800;flex-wrap:wrap}#bubble .f{color:#6b6865}#bubble p{margin:6px 0;font-weight:600}
+#bubble button{background:#e8e6e3;color:#262421;padding:4px 9px;font-size:13px;margin:2px 2px 2px 0}.mini{font-size:12px!important}
+.chip{margin-left:auto;background:#e8e6e3;color:#262421;border-radius:4px;padding:3px 9px;font-size:17px}.chip.dk{background:#403d39;color:#fff}
+#acts{display:flex;gap:8px;margin-bottom:10px}#acts button{flex:1;height:48px;background:#3d3a37;display:flex;align-items:center;justify-content:center}#acts svg{fill:#c3c0bd}
+#moves{display:grid;grid-template-columns:2.6em 1fr 1fr;height:330px;overflow-y:auto;align-content:start;font-size:16px}
+#moves .n{color:#8b8987;padding:5px 0}#moves a{display:flex;align-items:center;gap:5px;padding:4px 4px;cursor:pointer;border-radius:5px;margin:1px 0}#moves a.on{background:#4a4642}
+.gut{width:24px;display:inline-flex;justify-content:center}.fg{font-size:17px;width:1.1em}
+#graph{width:100%;height:78px;display:block;margin:10px 0;cursor:pointer;border-radius:3px}
+#sumv{display:none}.sm #sumv{display:block}.sm #acts,.sm #moves{display:none}
+.prow{display:flex;align-items:center;justify-content:space-between;margin:12px 0}.prow>i{font-style:normal}.pc{width:168px;display:flex;justify-content:center}
+.two>*{width:84px;display:flex;justify-content:center;align-items:center}.three>*{width:42px;display:flex;justify-content:center;align-items:center}
+.avb{width:64px;height:64px;border-radius:5px;background:#d6d3cf;color:#9b9894;font-size:44px;display:flex;align-items:center;justify-content:center}.avb.me{border:3px solid #81b64c}
+.acc{width:78px;padding:7px 0;border-radius:4px;font-size:24px;font-weight:800;text-align:center}.acc.lt{background:#fff;color:#262421}.acc.dk{background:#403d39}
+#sumv hr{border:0;border-top:1px solid #4a4642;margin:14px 0}
+#nav{display:flex;gap:8px}#nav button{flex:1;height:52px;background:#3d3a37;display:flex;align-items:center;justify-content:center}#nav svg{fill:#fff}
+#play .is,#play.on .ip{display:none}#play.on .is{display:block}
+#ft{display:flex;justify-content:center;gap:28px;margin-top:12px}#ft button{background:none;color:#c3c0bd;display:flex;align-items:center;gap:6px}
+.lnk{line-height:2}.lnk a{cursor:pointer;padding:2px 5px;border-radius:3px}.lnk a.on{background:#cfd8e3}
+.g{display:flex;gap:10px;padding:6px;cursor:pointer;border-radius:4px}.g:hover{background:#3d3a37}.g i{font-style:normal;font-weight:800;width:1em}.W{color:#81b64c}.L{color:#fa412d}.D{color:#aaa}.g span:nth-child(3){flex:1}
+#games{max-height:46vh;overflow:auto;margin:8px 0}.set label{display:flex;align-items:center;gap:8px;margin:10px 0}.set textarea,.set input[type=password]{width:100%}.set textarea{height:90px}
+.pzt{font-size:46px;font-weight:800}.pzh{display:flex;align-items:center;justify-content:space-between;margin:10px 0}.pzs{text-align:center;font-size:12px}.pzs b{font-size:30px;display:block}
+.stk{display:inline-flex;width:30px;height:30px;border:2px solid #6b6865;border-radius:6px;margin:0 3px;align-items:center;justify-content:center;color:#fa412d}.stk.x{background:#3b1d19;border-color:#fa412d}
+.f2{color:#bab8b6}.pzbtns{display:flex;gap:10px;margin:14px 0}.pzbtns button{flex:1;font-size:22px;padding:16px;background:#81b64c}
+</style>
+<main>
+<section id=left>
+<div id=ptop class=pl></div>
+<div id=wrap><div id=bar><div id=barw></div><span id=ev></span></div><div id=board></div><div id=over></div></div>
+<div id=pbot class=pl></div>
+<button id=gear data-v=set title=Settings>⚙</button>
+</section>
+<aside id=panel data-view=review>
+<div class=ph><button id=back title="My games"><svg width=26 height=26 viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
+<button title=Favourite><svg width=26 height=26 viewBox="0 0 24 24"><path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.31C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"/></svg></button>
+<b><svg width=34 height=34 viewBox="0 0 32 32"><circle cx=14 cy=14 r=11 fill="#81b64c" stroke="#e8e6e3" stroke-width=2.5 /><path d="M14 8l1.8 4 4.2.4-3.2 2.8 1 4.2L14 17.2 10.2 19.4l1-4.2L8 12.4l4.2-.4z" fill="#fff"/><path d="M22 22l7 7" stroke="#e8e6e3" stroke-width=3.5 stroke-linecap=round /></svg>Game Review</b>
+<button data-v=set title=Settings><svg width=26 height=26 viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></button></div>
+<div id=st></div>
+
+<div class="view on" id=p-review>
+<div id=coach><svg viewBox="0 0 100 110" width=96 height=106><path d="M8 110c0-22 14-34 42-34s42 12 42 34z" fill="#5d7388"/><rect x=40 y=62 width=20 height=16 fill="#e0b48e"/><ellipse cx=50 cy=42 rx=24 ry=28 fill="#e8bd97"/><path d="M26 40c0-26 48-26 48 0 0-8-6-16-24-16S26 32 26 40z" fill="#5a3b24"/><path d="M28 48c0 26 44 26 44 0 0 10-10 20-22 20S28 58 28 48z" fill="#5a3b24"/><g fill=none stroke="#333" stroke-width=2.5><circle cx=40 cy=42 r=8 /><circle cx=60 cy=42 r=8 /><path d="M48 42h4"/></g></svg>
+<div id=bubble><div id=info></div><div id=ex></div></div></div>
+<div id=acts><button data-hint=1 title="Explain this move"><svg width=26 height=26 viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg></button>
+<button data-alt=1 title="Show best move"><svg width=26 height=26 viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></button>
+<button data-pv=played title="Show what follows"><svg width=26 height=26 viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></button></div>
+<div id=moves></div>
+<canvas id=graph></canvas>
+<div id=sumv></div>
+<div id=nav><button data-n=first><svg width=28 height=28 viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg></button><button data-n=prev><svg width=28 height=28 viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></button>
+<button data-n=play id=play title="Play / Pause"><svg class=ip width=28 height=28 viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class=is width=28 height=28 viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg></button>
+<button data-n=next><svg width=28 height=28 viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></button><button data-n=last><svg width=28 height=28 viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg></button></div>
+<div id=ft><button data-sk=1>★ Skills</button><button id=share>⤴ Share</button><button data-v=puz>🧩 Puzzles</button></div>
+</div>
+
+<div class=view id=p-games><h3 style="margin:8px 0">My games</h3><input id=user placeholder="chess.com username"> <button id=load>Load games</button><div id=games></div><button id=more hidden>Load older</button></div>
+
+<div class="view set" id=p-set><h3 style="margin:8px 0">Settings</h3>
+<label>Analysis depth <select id=depth><option value=12>Fast (d12)<option value=16 selected>Normal (d16)<option value=20>Deep (d20)</select></label>
+<label><input type=checkbox id=snd checked> Sounds</label><label><input type=checkbox id=vo checked> Speak explanations <button id=sp>🔊 Replay</button></label>
+<label>Pieces <select id=ps></select> Board <select id=bs></select></label>
+<label><button id=flip>Flip board</button><button id=grab>Re-grab from chess.com tab</button></label>
+<input id=key type=password placeholder="Anthropic API key (kept only in this browser)" style="width:100%">
+<textarea id=pgn placeholder="…or paste a PGN here"></textarea><button id=go>Analyze PGN</button></div>
+
+<div class=view id=p-puz><div id=pz></div></div>
+</aside>
+</main>
+<script>addEventListener('error',e=>{const t=e.target;document.getElementById('st').textContent=t&&t.src?'Failed to load '+t.src.split('/').slice(-2).join('/')+' — run "node setup.mjs" in this extension folder, then reload the extension':'Error: '+e.message},true)</script>
+<script type=module src=review.js></script>
